@@ -1,31 +1,6 @@
 use log::{info, warn};
 use signal_device::SignalDevice;
 use std::collections::HashMap;
-use std::error::Error;
-use std::fmt;
-
-#[derive(Debug)]
-pub struct SignalDeviceError {
-    details: String,
-}
-
-impl SignalDeviceError {
-    fn new(msg: &str) -> SignalDeviceError {
-        SignalDeviceError {
-            details: msg.to_string(),
-        }
-    }
-}
-impl fmt::Display for SignalDeviceError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.details)
-    }
-}
-impl Error for SignalDeviceError {
-    fn description(&self) -> &str {
-        &self.details
-    }
-}
 
 pub struct SignalScanner {
     thread_text: String,
@@ -76,7 +51,7 @@ impl SignalScanner {
 
     // For each of the signals contained within each of the devices, execute a direct
     // query of its register to get a current value of its status
-    pub fn refresh_signals(&mut self) -> Result<(), SignalDeviceError> {
+    pub fn refresh_signals(&mut self) -> Result<(), String> {
         for device in self.devices.iter_mut() {
             device.1.refresh_signals();
         }

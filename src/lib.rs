@@ -1,4 +1,4 @@
-use log::{info, warn};
+use log::info;
 use signal_device::SignalDevice;
 use std::collections::HashMap;
 
@@ -37,16 +37,15 @@ impl SignalScanner {
     // based on what it was last time the scanner updated
     pub fn get_device_signal_status(
         &mut self,
-        device_name: &String,
-        signal_name: &String,
+        device_name: &str,
+        signal_name: &str,
     ) -> Result<bool, String> {
-        Ok(self
+        Ok(*self
             .get_device_mut(device_name)
-            .expect(format!("Unable to find device: {}", device_name).as_str())
+            .unwrap_or_else(|| panic!("Unable to find device: {}", device_name))
             .get_signal(signal_name)
-            .expect(format!("Unable to find signal: {}", signal_name).as_str())
-            .get_signal_status()
-            .clone())
+            .unwrap_or_else(|_| panic!("Unable to find signal: {}", signal_name))
+            .get_signal_status())
     }
 
     // For each of the signals contained within each of the devices, execute a direct
